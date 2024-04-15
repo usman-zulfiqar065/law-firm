@@ -28,4 +28,8 @@ class AdminMailer < ApplicationMailer
 
     mail(to: User.admin.pluck(:email), subject: 'Adalat.pk: New message for lawyer')
   end
+
+  def sales_bulk_email(email)
+    mail(to: email, subject: 'Adalat.pk: Your Partner for Tax Compliance and Savings')
+  end
 end

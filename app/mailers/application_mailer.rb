@@ -2,7 +2,7 @@ class ApplicationMailer < ActionMailer::Base
   if Rails.env.production?
     default from: 'Adalat.pk <contact@adalat.pk>'
   else
-    default from: 'Adalat.pk Testing <contact@adalat.pk>'
+    default from: 'Adalat.pk <contact@adalat.pk>'
   end
   layout 'mailer'
 
