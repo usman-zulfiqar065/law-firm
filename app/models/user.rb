@@ -11,7 +11,7 @@ class User < ApplicationRecord
   validates :avatar, presence: { message: "(Profile picture) can't be blank!" }, on: :create
   validate :validate_user_services_uniqueness, on: :create
 
-  before_validation :prepend_adv_to_name, on: %i[create update], if: :add_advocate?
+  before_validation :prepend_adv_to_name, on: %i[create update], if: :lawyer?
 
   ROLES = {
     lawyer: 0,
@@ -56,9 +56,5 @@ class User < ApplicationRecord
   def prepend_adv_to_name
     self.name = name.downcase.gsub('adv.', '').gsub('advocate', '').gsub('adv', '').strip.titleize
     self.name = "Adv. #{name}" if user_summary.fresh_law_graduate?
-  end
-
-  def add_advocate?
-    user_summary.present?
   end
 end
