@@ -3,11 +3,10 @@ class UserService < ApplicationRecord
   belongs_to :service
 
   LEVELS = {
-    fresh_law_graduate: 0,
-    intermediate: 1,
-    advanced: 2,
-    expert: 3,
-    specialist: 4
+    intermediate: 0,
+    advanced: 1,
+    expert: 2,
+    specialist: 3
   }.freeze
 
   enum service_proficiency: LEVELS

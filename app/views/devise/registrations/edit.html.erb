@@ -10,8 +10,7 @@
   <%= link_to '<i class="bi bi-arrow-return-left"></i> Back'.html_safe, :back, class: "gredient-text mb-3 rounded-0" %>
   <div class="register h-100 d-flex flex-column align-items-center justify-content-center p-4 max-extended-form-width m-auto rounded-3" >
     <h2 class="fw-bolder">Edit your profile</h2>
-
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= form_with(model: resource, url: registration_path(resource_name), html: { method: :put }, data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } ) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
        <div class="row">
@@ -123,29 +122,19 @@
               </h2>
               <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body fs-14px border-top text-start px-lg-5">
-                  <div data-controller="services" data-service-options="<%= Service.all.pluck(:name, :id).to_json %>" 
-                      data-service-index="<%= resource.user_services.count %>" data_proficiency_levels="<%= UserService::LEVELS.keys.to_json %>">
-                    <%= f.fields_for(:user_services) do |service| %>
-                      <div class="row service persisted-services mt-3">
-                        <div class="col-md field">
-                          <%= service.label :service, class: 'form-label text-muted' %><br />
-                          <%= service.select :service_id, Service.all.pluck(:name, :id), {}, class: "form-select rounded-0" %>
-                        </div>
-                        <div class="col-md field">
-                          <%= service.label :service_proficiency, class: 'form-label text-muted' %><br />
-                          <div class="d-flex">
-                            <%= service.select :service_proficiency, humanize_keys(UserService::LEVELS), {}, class: 'form-select' %>
-                            <a data-action="services#remove_service" class="align-self-center fs-4 ms-2 text-danger"><i class="bi bi-x-circle"></i></a>
-                            <%= service.check_box :_destroy, class: 'd-none service-checkbox' %>
-                          </div>
-                        </div>
-                      </div>
+                  <%= f.fields_for :user_services do |service_fields| %>
+                    <%= render "devise/shared/user_service_form", f: service_fields %>
+                  <% end %>
+
+                  <template data-nested-form-target="template">
+                    <%= f.fields_for :user_services, UserService.new, child_index: 'NEW_RECORD' do |service_fields| %>
+                      <%= render "devise/shared/user_service_form", f: service_fields %>
                     <% end %>
-                    <% if resource.user_services.count < Service.all.count %>
-                      <div class="text-end add-service-btn">
-                        <a  data-action="services#add_service" class = "btn text-success mt-3 rounded-0" ><i class="bi bi-plus-lg"></i> Add more</a>
-                      </div>
-                    <% end %>
+                  </template>
+                  <div data-nested-form-target="target"></div>
+
+                  <div class="text-end add-service-btn">
+                    <button type="button" data-action="nested-form#add", class="btn text-success mt-3 rounded-0"><i class="bi bi-plus-lg"></i>Add more service</button>
                   </div>
                 </div>
               </div>
