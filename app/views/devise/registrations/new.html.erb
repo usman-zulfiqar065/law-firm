@@ -12,7 +12,7 @@
     <h2 class="fw-bolder">Sign up as a Laywer</h2>
     <p>Or <%= link_to "Sign in to your existing account", new_session_path(resource_name), class: 'gredient-text text-decoration-none'%></p>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= form_with(model: resource, data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } ) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="row">
@@ -122,25 +122,20 @@
             </h2>
             <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
               <div class="accordion-body fs-14px border-top text-start px-lg-5">
-                <div data-controller="services" data-service-options="<%= Service.all.pluck(:name, :id).to_json %>" 
-                    data-service-index="0" data_proficiency_levels="<%= UserService::LEVELS.keys.to_json %>">
-                  <%= f.fields_for(:user_services, resource.user_services.build) do |service| %>
-                    <div class="row service">
-                      <div class="col-md field">
-                        <%= service.label :service, class: 'form-label text-muted' %><br />
-                        <%= service.select :service_id, Service.all.pluck(:name, :id), {}, class: "form-select rounded-0" %>
-                      </div>
-                      <div class="col-md field">
-                        <%= service.label :service_proficiency, class: 'form-label text-muted' %><br />
-                        <div class="d-flex">
-                          <%= service.select :service_proficiency, humanize_keys(UserService::LEVELS), {}, class: 'form-select rounded-0' %>
-                        </div>
-                      </div>
-                    </div>
+
+                <%= f.fields_for :user_services, UserService.new do |service_fields| %>
+                  <%= render "devise/shared/user_service_form", f: service_fields %>
+                <% end %>
+
+                <template data-nested-form-target="template">
+                  <%= f.fields_for :user_services, UserService.new, child_index: 'NEW_RECORD' do |service_fields| %>
+                    <%= render "devise/shared/user_service_form", f: service_fields %>
                   <% end %>
-                  <div class="text-end add-service-btn">
-                    <a  data-action="services#add_service" class = "btn text-success mt-3 rounded-0" ><i class="bi bi-plus-lg"></i> Add more</a>
-                  </div>
+                </template>
+                <div data-nested-form-target="target"></div>
+
+                <div class="text-end add-service-btn">
+                  <button type="button" data-action="nested-form#add", class="btn text-success mt-3 rounded-0"><i class="bi bi-plus-lg"></i>Add more service</button>
                 </div>
               </div>
             </div>

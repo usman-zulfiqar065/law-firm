@@ -65,23 +65,6 @@
       </div>
     </div>
 
-    <% if user_signed_in? && ( current_user.admin? || current_user == @user ) %>
-      <div class="border-top py-2 row mx-0" >
-        <div class="d-flex col-md-6 flex-column text-center">
-          <div class="fw-semibold">ID Card</div>
-          <div class="border rounded-3">
-            <%= image_tag @user.user_summary&.id_card, alt: 'id-card', class: 'user-info-card rounded-3' %>
-          </div>
-        </div>
-        <div class="d-flex col-md-6 flex-column text-center">
-          <div class="fw-semibold">Bar Concil Card</div>
-          <div class="border rounded-3">
-            <%= image_tag @user.user_summary&.bar_concil_card, class: 'user-info-card rounded-3' %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
     <div data-controller="users" data-users-type-value="services">
       <div class="fw-bold fs-5">Services</div>
       <div class="mt-1"><%= @user.name %> specializes in the following services and procedures</div>

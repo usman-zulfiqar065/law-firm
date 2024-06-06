@@ -30,7 +30,7 @@ class User < ApplicationRecord
   has_many :user_services, dependent: :destroy
   has_many :services, through: :user_services
 
-  accepts_nested_attributes_for :user_services, allow_destroy: true
+  accepts_nested_attributes_for :user_services, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :user_summary
 
   default_scope { order(created_at: :asc) }
